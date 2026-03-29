@@ -30,3 +30,6 @@ Thumbs.db
 # Environments
 .env*
 .env
+
+# Local-only working docs
+docs/claude-code-to-codex-porting.local.md
