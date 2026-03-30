@@ -30,6 +30,12 @@ Compared to the original Claude Code-based Harness, this project adds:
 - deterministic `_workspace/` handoff conventions
 - a small validation script for repository consistency
 
+## Docs
+
+- [Installation](docs/installation.md)
+- [Sample Prompts](docs/sample-prompts.md)
+- [Harness Output Specs](docs/harness/README.md)
+
 ## Repository Layout
 
 ```text
