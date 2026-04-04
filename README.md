@@ -11,6 +11,8 @@
 
 Meta Harness is a portable, standards-first meta-skill for designing domain-specific workflows, reusable specialist skills, and deterministic handoff artifacts.
 
+Current project version: `0.2`. See [Changelog](CHANGELOG.md) for checkpoint-based version history.
+
 Adapted from [the original Harness project](https://github.com/revfactory/harness) and distributed here under the same [Apache 2.0](LICENSE) license.
 
 ## What This Adds
@@ -37,6 +39,7 @@ Compared to the original Claude Code-based Harness, this project adds:
 - [Installation](docs/installation.md)
 - [Compatibility Guides](docs/compatibility/README.md)
 - [Sample Prompts](docs/sample-prompts.md)
+- [Changelog](CHANGELOG.md)
 - [Harness Output Specs](docs/harness/README.md)
 
 ## Repository Layout

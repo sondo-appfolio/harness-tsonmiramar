@@ -2,6 +2,8 @@
 
 Generated harness-specific team specs and role briefs belong under `docs/harness/{domain}/`.
 
+Repo-level version history for the meta-harness project lives in [CHANGELOG.md](../../CHANGELOG.md).
+
 Typical generated files include:
 
 - `docs/harness/{domain}/team-spec.md`
