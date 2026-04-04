@@ -13,6 +13,7 @@ REQUIRED_FILES = [
     ROOT / "AGENTS.md",
     ROOT / ".agents/skills/harness/SKILL.md",
     ROOT / ".agents/skills/harness/references/agent-design-patterns.md",
+    ROOT / ".agents/skills/harness/references/autonomous-experimentation.md",
     ROOT / ".agents/skills/harness/references/orchestrator-template.md",
     ROOT / ".agents/skills/harness/references/team-examples.md",
     ROOT / ".agents/skills/harness/references/skill-writing-guide.md",
@@ -185,6 +186,23 @@ def check_pattern_reference(failures: list[str]) -> None:
             )
 
 
+def check_autonomous_reference(failures: list[str]) -> None:
+    path = ROOT / ".agents/skills/harness/references/autonomous-experimentation.md"
+    text = read_text(path).casefold()
+    required_tokens = [
+        "mutable surface",
+        "immutable evaluation surface",
+        "baseline",
+        "results.tsv",
+        "keep",
+        "discard",
+        "user-controlled compute",
+    ]
+    for token in required_tokens:
+        if token not in text:
+            fail(f"Autonomous experimentation reference is missing: {token}", failures)
+
+
 def check_for_banned_tokens(failures: list[str]) -> None:
     root = ROOT / ".agents/skills/harness"
     for path in sorted(root.rglob("*")):
@@ -210,6 +228,7 @@ def main() -> int:
     check_readme_links(failures)
     check_main_skill(failures)
     check_pattern_reference(failures)
+    check_autonomous_reference(failures)
     check_for_banned_tokens(failures)
 
     if failures:

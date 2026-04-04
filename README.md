@@ -26,6 +26,7 @@ Compared to the original Claude Code-based Harness, this project adds:
 
 - a 6-phase workflow for analysis, architecture, generation, integration, and validation
 - 6 architecture patterns: Pipeline, Fan-out/Fan-in, Expert Pool, Producer-Reviewer, Supervisor, and Hierarchical Delegation
+- an autonomous experimentation workflow profile for user-controlled compute
 - repo-local skills under `.agents/skills/`
 - durable output specs under `docs/harness/`
 - deterministic `_workspace/` handoff conventions
@@ -86,6 +87,7 @@ Good requests for Harness:
 Build a reusable research harness for this repository.
 Design a review workflow with explicit QA handoffs.
 Define specialist skills and a team spec for this domain.
+Design an autonomous experiment harness for this repository with a fixed metric and a deterministic results ledger.
 ```
 
 ## Workflow and Patterns

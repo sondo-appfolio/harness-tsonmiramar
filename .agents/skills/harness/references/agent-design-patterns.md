@@ -209,6 +209,37 @@ Real harnesses often blend patterns:
 
 When combining patterns, document the outermost pattern first, then note the local variation inside the relevant phase.
 
+## Workflow Profile: Autonomous Experimentation
+
+Autonomous experimentation is not a seventh architecture pattern. It is a workflow profile for requests that iterate on a narrow mutable surface against an immutable evaluation surface and declared metric.
+
+Use it when:
+
+- the user explicitly wants an iterative experiment loop
+- the evaluation harness can stay read-only for the run
+- every candidate can be logged and either kept or discarded
+
+Recommended pairings:
+
+- Pipeline for baseline -> mutate -> evaluate -> decide loops
+- Supervisor for changing experiment backlogs or branching candidate queues
+- Producer-Reviewer when a reviewer must explicitly approve advancing the best candidate
+
+Minimum extra artifacts:
+
+- `_workspace/experiments/{run}/request-summary.md`
+- `_workspace/experiments/{run}/baseline.md`
+- `_workspace/experiments/{run}/results.tsv`
+- `_workspace/experiments/{run}/final-summary.md`
+
+Core rules:
+
+- declare the mutable surface before the first candidate
+- keep the evaluation surface read-only for the run
+- establish a measured baseline before mutation
+- record every candidate outcome, including crashes and timeouts
+- run on user-controlled compute unless the repository defines another trusted execution surface
+
 ## Artifact Shape Rules
 
 Use these defaults when converting a pattern into files:
@@ -218,3 +249,4 @@ Use these defaults when converting a pattern into files:
 - reusable specialist behavior becomes `.agents/skills/{specialist}/SKILL.md`
 - bulky domain detail moves into `.agents/skills/{specialist}/references/`
 - intermediate work products live in `_workspace/` and keep deterministic names
+- autonomous experiment ledgers live under `_workspace/experiments/{run}/`
