@@ -27,6 +27,11 @@ def build_parser() -> argparse.ArgumentParser:
   parser.add_argument("--layout", choices=LAYOUTS, default="standard")
   parser.add_argument("--mode", choices=MODES, default="copy")
   parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help="Print the resolved install plan without modifying any destination paths.",
+  )
+  parser.add_argument(
     "--force",
     action="store_true",
     help="Replace an existing Harness install at the destination paths.",
@@ -92,7 +97,7 @@ def install_destination(source: Path, destination: Path, mode: str) -> None:
   destination.symlink_to(source, target_is_directory=True)
 
 
-def aider_followup(scope: str, root: Path) -> str:
+def aider_followup(root: Path) -> str:
   config_path = root / ".aider.conf.yml"
   return "\n".join(
     [
@@ -120,8 +125,34 @@ def post_install_notes(scope: str, layout: str, root: Path) -> list[str]:
       "Droid can use the shared install and the native .factory/skills mirror. Reserve .factory/droids for subagents with their own tool/model policy."
     )
   if layout == "aider":
-    notes.append(aider_followup(scope, root))
+    notes.append(aider_followup(root))
   return notes
+
+
+def print_dry_run_summary(
+  mode: str,
+  layout: str,
+  destinations: list[tuple[str, Path]],
+  existing: list[Path],
+  notes: list[str],
+  force: bool,
+) -> None:
+  print(f"Dry run: Harness install using {mode} mode with {layout} layout.")
+  for label, destination in destinations:
+    state = "exists" if destination in existing else "missing"
+    print(f"- {label}: {destination} [{state}]")
+  if existing and not force:
+    joined = ", ".join(str(path) for path in existing)
+    print(f"- install status: would fail without --force because destination exists: {joined}")
+  elif existing and force:
+    joined = ", ".join(str(path) for path in existing)
+    print(f"- install status: would replace existing destination paths: {joined}")
+  else:
+    print("- install status: would create all destination paths")
+
+  for note in notes:
+    print(note)
+  print("Dry run only; no changes made.")
 
 
 def main() -> int:
@@ -134,11 +165,23 @@ def main() -> int:
   for label, relative in destination_specs(args.scope, args.layout):
     destinations.append((label, root / relative))
 
+  notes = post_install_notes(args.scope, args.layout, root)
   existing = [
     destination
     for _, destination in destinations
     if destination.exists() or destination.is_symlink()
   ]
+  if args.dry_run:
+    print_dry_run_summary(
+      args.mode,
+      args.layout,
+      destinations,
+      existing,
+      notes,
+      args.force,
+    )
+    return 0
+
   if existing and not args.force:
     joined = ", ".join(str(path) for path in existing)
     return fail(f"Destination already exists; rerun with --force to replace: {joined}")
@@ -154,7 +197,7 @@ def main() -> int:
   for label, destination in destinations:
     print(f"- {label}: {destination}")
 
-  for note in post_install_notes(args.scope, args.layout, root):
+  for note in notes:
     print(note)
 
   return 0
