@@ -18,6 +18,11 @@ def assert_true(condition: bool, message: str) -> None:
     raise AssertionError(message)
 
 
+def assert_contains(text: str, needle: str, message: str) -> None:
+  if needle not in text:
+    raise AssertionError(message)
+
+
 def run_install(
   *args: str, env: dict[str, str] | None = None, expect_success: bool = True
 ) -> subprocess.CompletedProcess[str]:
@@ -59,9 +64,40 @@ def assert_standard_install(project_root: Path) -> None:
   )
 
 
+def assert_shared_install(project_root: Path, expect_symlink: bool = False) -> None:
+  shared_root = project_root / ".agents" / "skills" / "harness"
+  shared_skill = shared_root / "SKILL.md"
+  assert_true(shared_skill.exists(), f"Missing shared install: {shared_skill}")
+  assert_true(
+    shared_root.is_symlink() == expect_symlink,
+    f"Expected shared install symlink={expect_symlink}: {shared_root}",
+  )
+
+
 def main() -> int:
   with tempfile.TemporaryDirectory(prefix="meta-harness-install-") as tmp:
     tmp_root = Path(tmp)
+
+    project_dry_run = tmp_root / "project-dry-run"
+    project_dry_run.mkdir()
+    dry_run = run_install(
+      "--scope",
+      "project",
+      "--target",
+      str(project_dry_run),
+      "--layout",
+      "standard",
+      "--dry-run",
+    )
+    assert_contains(
+      dry_run.stdout,
+      "Dry run only; no changes made.",
+      "Expected dry-run output to confirm no changes were made.",
+    )
+    assert_true(
+      not (project_dry_run / ".agents").exists(),
+      "Dry run should not create the shared install path.",
+    )
 
     project_standard = tmp_root / "project-standard"
     project_standard.mkdir()
@@ -82,6 +118,19 @@ def main() -> int:
       "Destination already exists" in rerun.stderr,
       "Expected rerun without --force to fail cleanly.",
     )
+    marker = project_standard / ".agents" / "skills" / "harness" / "marker.txt"
+    marker.write_text("replace me", encoding="utf-8")
+    run_install(
+      "--scope",
+      "project",
+      "--target",
+      str(project_standard),
+      "--layout",
+      "standard",
+      "--force",
+    )
+    assert_standard_install(project_standard)
+    assert_true(not marker.exists(), "Expected --force to replace the prior install tree.")
 
     home_root = tmp_root / "home"
     home_root.mkdir()
@@ -94,6 +143,14 @@ def main() -> int:
     )
     assert_true(
       not shared_user_skill.is_symlink(), "Expected copy mode for user install"
+    )
+    user_dry_run = run_install(
+      "--scope", "user", "--layout", "aider", "--dry-run", env=home_env
+    )
+    assert_contains(
+      user_dry_run.stdout,
+      str(home_root / ".aider.conf.yml"),
+      "Expected aider dry-run output to include the user config path.",
     )
 
     project_forge = tmp_root / "project-forge"
@@ -117,6 +174,44 @@ def main() -> int:
       (project_droid / ".factory" / "skills" / "harness" / "SKILL.md").exists(),
       "Missing Droid mirror install.",
     )
+
+    project_openhands = tmp_root / "project-openhands"
+    project_openhands.mkdir()
+    openhands = run_install(
+      "--scope", "project", "--target", str(project_openhands), "--layout", "openhands"
+    )
+    assert_standard_install(project_openhands)
+    assert_contains(
+      openhands.stdout,
+      "OpenHands uses the shared .agents/skills/ location",
+      "Expected OpenHands guidance in post-install notes.",
+    )
+
+    project_aider = tmp_root / "project-aider"
+    project_aider.mkdir()
+    aider = run_install(
+      "--scope", "project", "--target", str(project_aider), "--layout", "aider"
+    )
+    assert_standard_install(project_aider)
+    assert_contains(
+      aider.stdout,
+      str(project_aider / ".aider.conf.yml"),
+      "Expected Aider follow-up output to include the project config path.",
+    )
+
+    project_symlink = tmp_root / "project-symlink"
+    project_symlink.mkdir()
+    run_install(
+      "--scope",
+      "project",
+      "--target",
+      str(project_symlink),
+      "--layout",
+      "standard",
+      "--mode",
+      "symlink",
+    )
+    assert_shared_install(project_symlink, expect_symlink=True)
 
   print("OK: Harness installer smoke tests passed.")
   return 0
