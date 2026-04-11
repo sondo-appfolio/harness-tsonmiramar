@@ -26,3 +26,8 @@ python3 scripts/install_harness.py --scope user --layout codex
 - Use `.agents/skills/harness/` for reusable Harness guidance that should stay canonical and portable.
 - Use `.codex/skills/harness/` when you want Codex's native discovery path in addition to the shared one.
 - Keep Codex-specific setup in `.codex/` only when it is genuinely native behavior and not part of the reusable Harness workflow contract.
+
+## Generated Skill Discovery
+
+- Generated `SKILL.md` files should begin with YAML frontmatter.
+- Include at least `name` and `description` before the markdown heading so Codex can reliably discover repo-specific generated skills.

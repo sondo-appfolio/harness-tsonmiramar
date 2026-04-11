@@ -95,6 +95,8 @@ MAIN_SKILL_REQUIRED_TOKENS = [
   "what / why / how",
   "rippable",
   "references/agents-md-guide.md",
+  "require yaml frontmatter in every generated `skill.md`",
+  "start every generated `skill.md` with yaml frontmatter containing at least `name` and `description`",
 ]
 
 AGENTS_REFERENCE_REQUIRED_TOKENS = [
@@ -107,16 +109,27 @@ AGENTS_REFERENCE_REQUIRED_TOKENS = [
   "compact template",
 ]
 
+SKILL_WRITING_GUIDE_REQUIRED_TOKENS = [
+  "every generated `skill.md` should begin with yaml frontmatter",
+  "`name`: stable, repository-friendly skill name",
+  "`description`: one-line selection summary",
+  "do not bury frontmatter",
+]
+
 ROOT_DOC_EXPECTATIONS = {
   "README.md": [
     "AGENTS Authoring Guide",
     "agents-md-guide.md",
     "rippable harness",
+    "YAML frontmatter",
+    "`name` and `description`",
   ],
   "docs/harness/README.md": [
     "AGENTS Authoring Guide",
     "agents-md-guide.md",
     "rippable",
+    "YAML frontmatter",
+    "`name` and `description`",
   ],
 }
 
@@ -136,6 +149,8 @@ COMPATIBILITY_EXPECTATIONS = {
     "~/.codex/skills/harness/",
     "python3 scripts/install_harness.py --scope project --target /path/to/repo --layout codex",
     "python3 scripts/install_harness.py --scope user --layout codex",
+    "YAML frontmatter",
+    "`name` and `description`",
   ],
   "droid.md": [
     ".agents/skills/harness/",
@@ -382,6 +397,14 @@ def check_agents_reference(failures: list[str]) -> None:
       fail(f"AGENTS guide is missing updated guidance token: {token}", failures)
 
 
+def check_skill_writing_guide(failures: list[str]) -> None:
+  path = ROOT / ".agents/skills/harness/references/skill-writing-guide.md"
+  text = read_text(path).casefold()
+  for token in SKILL_WRITING_GUIDE_REQUIRED_TOKENS:
+    if token not in text:
+      fail(f"Skill writing guide is missing updated guidance token: {token}", failures)
+
+
 def check_root_doc_expectations(failures: list[str]) -> None:
   for relative_path, required_tokens in ROOT_DOC_EXPECTATIONS.items():
     text = read_text(ROOT / relative_path)
@@ -447,6 +470,7 @@ def main() -> int:
   check_root_docs_markdown(failures)
   check_repo_agents(failures)
   check_agents_reference(failures)
+  check_skill_writing_guide(failures)
   check_root_doc_expectations(failures)
   check_main_skill(failures)
   check_pattern_reference(failures)

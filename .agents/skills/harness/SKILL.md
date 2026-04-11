@@ -69,7 +69,7 @@ Default to specialist skills plus a markdown team spec. Add extra role briefs on
 - Use file-based handoffs and markdown specs instead of assumed peer-to-peer runtime messaging.
 - Do not require model pins, SDK runtimes, or MCP orchestration unless the repository already depends on them.
 - Keep model-specific retries and recovery logic easy to rip out as models improve.
-- Do not require YAML frontmatter in generated skills.
+- Require YAML frontmatter in every generated `SKILL.md`. Include at least `name` and `description` before the markdown body so native skill discovery can reliably find repo-specific generated skills.
 - Keep names deterministic and repository-friendly.
 
 ## 6-Phase Workflow
@@ -124,9 +124,10 @@ Output:
 ### Phase 4: Skill Generation
 
 1. Generate each reusable skill under `.agents/skills/`.
-2. Keep the main `SKILL.md` lean and move bulky detail or evolving heuristics into `references/`.
-3. Include `When to use`, `Required inputs`, workflow steps, expected outputs, and validation notes.
-4. Bundle deterministic helper scripts only when they remove repeated manual setup or repeated validation work.
+2. Start every generated `SKILL.md` with YAML frontmatter containing at least `name` and `description`, then the markdown heading and body.
+3. Keep the main `SKILL.md` lean and move bulky detail or evolving heuristics into `references/`.
+4. Include `When to use`, `Required inputs`, workflow steps, expected outputs, and validation notes.
+5. Bundle deterministic helper scripts only when they remove repeated manual setup or repeated validation work.
 
 Output:
 
@@ -207,6 +208,7 @@ Every generated harness should meet these checks:
 - each phase has at least one named output
 - reviewer or QA steps are explicit when quality risk is high
 - `When to use` and `Required inputs` sections are concrete enough to prevent overlap
+- generated skills start with YAML frontmatter that includes at least `name` and `description`
 - `_workspace/` handoffs are deterministic and preserved for inspection
 - any repo `AGENTS.md` stays short, repo-wide, and pointer-heavy
 - model-specific recovery logic is isolated enough to remove without rewriting the whole harness

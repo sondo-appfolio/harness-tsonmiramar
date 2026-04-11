@@ -93,6 +93,8 @@ See [Compatibility Guides](docs/compatibility/README.md) for path mappings and a
    - `docs/harness/<domain>/team-spec.md`
    - `_workspace/{phase}_{role}_{artifact}.md`
 
+Generated `SKILL.md` files should begin with YAML frontmatter containing at least `name` and `description` so native skill discovery can reliably select repo-specific generated skills.
+
 Good requests for Harness:
 
 ```text

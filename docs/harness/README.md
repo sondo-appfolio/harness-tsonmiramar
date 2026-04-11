@@ -12,6 +12,8 @@ Typical generated files include:
 - `docs/harness/{domain}/roles/{role}.md`
 - `_workspace/{phase}_{role}_{artifact}.md`
 
+Generated `SKILL.md` files under `.agents/skills/` should start with YAML frontmatter containing at least `name` and `description`, followed by the markdown body.
+
 Autonomous experiment workflows may additionally preserve deterministic run logs such as:
 
 - `_workspace/experiments/{run}/results.tsv`
