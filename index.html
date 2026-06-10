@@ -1163,7 +1163,7 @@ function detectLang() {
   const hash = location.hash.replace('#', '').toLowerCase();
   if (['en', 'ko', 'ja'].includes(hash)) return hash;
   const stored = localStorage.getItem('harness-lang');
-  if (stored) return stored;
+  if (stored && ['en', 'ko', 'ja'].includes(stored)) return stored;
   const nav = (navigator.language || '').toLowerCase();
   if (nav.startsWith('ko')) return 'ko';
   if (nav.startsWith('ja')) return 'ja';
