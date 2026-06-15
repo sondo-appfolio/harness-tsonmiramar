@@ -116,3 +116,23 @@ For most reusable harnesses, the minimum useful set is:
 - one normal-flow and one failure-flow scenario
 
 If the flow is too small to justify that set, it probably should remain a single specialist skill instead of an orchestrator.
+
+## Cursor Rule Template
+
+Use this only when the target runtime is Cursor and the repository needs durable always-loaded constraints beyond a short `AGENTS.md`.
+
+```markdown
+---
+description: {domain} harness repo-wide constraints
+alwaysApply: true
+---
+
+# {Domain} Harness Rules
+
+- canonical harness paths:
+- verify commands:
+- `_workspace/` git policy:
+- artifact naming convention:
+```
+
+Keep workflow playbooks in skills and team specs. Put only enforceable repo-wide constraints in the rule file.

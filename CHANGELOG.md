@@ -2,6 +2,10 @@
 
 This repository uses checkpoint-based versioning for the meta-harness project history.
 
+## 0.4
+
+- Scope: Cursor layout (`--layout cursor`), `mirror_skills.py`, Cursor compatibility docs, orchestration reference, and `validate_cursor_port.py`
+
 ## 0.3
 
 - Checkpoint: `b24fc51` (`Merge pull request #4 from SaehwanPark/codex/v0.3-agents-harness-upgrade`)

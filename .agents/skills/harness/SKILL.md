@@ -40,6 +40,7 @@ Harness generates only the artifacts needed to make the workflow reusable:
 - `.agents/skills/{specialist}/references/*` for progressive-disclosure details
 - `docs/harness/{domain}/team-spec.md` for role topology, handoffs, and failure policy
 - `docs/harness/{domain}/roles/{role}.md` only when a role needs a durable brief but not a full skill
+- `.cursor/rules/harness-{domain}.mdc` for durable Cursor repo-wide constraints when the target runtime is Cursor
 - `_workspace/{phase}_{role}_{artifact}.md` for intermediate artifacts and review evidence
 - `_workspace/experiments/{run}/results.tsv` when the harness includes an autonomous experiment loop
 
@@ -70,9 +71,25 @@ Default to specialist skills plus a markdown team spec. Add extra role briefs on
 - Do not require model pins, SDK runtimes, or MCP orchestration unless the repository already depends on them.
 - Keep model-specific retries and recovery logic easy to rip out as models improve.
 - Require YAML frontmatter in every generated `SKILL.md`. Include at least `name` and `description` before the markdown body so native skill discovery can reliably find repo-specific generated skills.
+- For Cursor targets, set `user-invocable: true` on orchestrator skills, `disable-model-invocation: true` on specialist skills, and optional `user-invocable: true` on directly invocable Expert Pool roles.
 - Keep names deterministic and repository-friendly.
 
 ## 6-Phase Workflow
+
+### Phase 0: Harness Audit
+
+Run this phase before generating or extending a harness when the target repository may already contain harness artifacts.
+
+1. Read `.agents/skills/`, `.cursor/skills/`, `.cursor/rules/`, `docs/harness/`, and any repo `AGENTS.md`.
+2. Detect whether the request is new build, extension, or maintenance.
+3. Compare existing skills, role briefs, team specs, and rules for drift or duplication.
+4. Summarize the audit and confirm the execution plan before changing artifacts.
+
+Output:
+
+- audit summary
+- execution mode: new build, extension, or maintenance
+- reuse and conflict notes
 
 ### Phase 1: Domain Analysis
 
@@ -94,9 +111,10 @@ Output:
 1. Choose the smallest architecture that can cover the workflow.
 2. Decide whether the work stays single-agent, needs a sequential orchestrator, or benefits from bounded parallel workers.
 3. Select one of the six patterns from `references/agent-design-patterns.md`.
-4. For autonomous experiment loops, choose the matching workflow profile from `references/autonomous-experimentation.md` and decide whether it composes with Pipeline, Supervisor, or Producer-Reviewer.
-5. Define how artifacts move between phases through `_workspace/` files and final output paths.
-6. Decide which recovery or model-specific logic must stay removable as the harness evolves.
+4. For Cursor targets, map the chosen pattern to coordination style using `references/cursor-orchestration.md`.
+5. For autonomous experiment loops, choose the matching workflow profile from `references/autonomous-experimentation.md` and decide whether it composes with Pipeline, Supervisor, or Producer-Reviewer.
+6. Define how artifacts move between phases through `_workspace/` files and final output paths.
+7. Decide which recovery or model-specific logic must stay removable as the harness evolves.
 
 Output:
 
@@ -128,6 +146,7 @@ Output:
 3. Keep the main `SKILL.md` lean and move bulky detail or evolving heuristics into `references/`.
 4. Include `When to use`, `Required inputs`, workflow steps, expected outputs, and validation notes.
 5. Bundle deterministic helper scripts only when they remove repeated manual setup or repeated validation work.
+6. For Cursor targets, keep generated skills under `.agents/skills/` only and mirror them in Phase 5.
 
 Output:
 
@@ -142,6 +161,7 @@ Output:
 3. Reserve worker delegation for clearly parallel slices such as broad research, multi-surface review, or independent generation branches.
 4. For autonomous experiment loops, preserve the run ledger, baseline artifact, and keep/discard policy under `_workspace/experiments/{run}/`.
 5. Preserve intermediate artifacts in `_workspace/` for debugging and auditability.
+6. For Cursor targets, run `python3 scripts/mirror_skills.py --target <repo-root> --layout cursor` and create `.cursor/rules/harness-{domain}.mdc` when durable repo-wide constraints are needed.
 
 Output:
 
@@ -167,14 +187,14 @@ Output:
 
 Use the smallest pattern that preserves quality and clarity.
 
-| Pattern | Best for | Default portable style |
-| --- | --- | --- |
-| Pipeline | sequential dependent work | sequential orchestrator skill plus `_workspace/` handoffs |
-| Fan-out/Fan-in | parallel independent work with later synthesis | orchestrator skill plus bounded parallel workers and a final synthesis step |
-| Expert Pool | selective routing to a subset of specialists | routing section in team spec plus reusable specialist skills |
-| Producer-Reviewer | generation followed by explicit quality review | specialist producer skill, reviewer skill, and bounded revision loop |
-| Supervisor | dynamic allocation across changing work units | top-level orchestrator or supervisor skill with explicit reassignment rules |
-| Hierarchical Delegation | naturally layered decomposition | shallow hierarchy with a top-level orchestrator and one downstream coordination layer |
+| Pattern | Best for | Default portable style | Cursor style |
+| --- | --- | --- | --- |
+| Pipeline | sequential dependent work | sequential orchestrator skill plus `_workspace/` handoffs | single-agent sequential phases |
+| Fan-out/Fan-in | parallel independent work with later synthesis | orchestrator skill plus bounded parallel workers and a final synthesis step | parallel Task calls plus synthesis phase |
+| Expert Pool | selective routing to a subset of specialists | routing section in team spec plus reusable specialist skills | routed specialist skill or targeted Task |
+| Producer-Reviewer | generation followed by explicit quality review | specialist producer skill, reviewer skill, and bounded revision loop | producer artifact plus readonly reviewer Task |
+| Supervisor | dynamic allocation across changing work units | top-level orchestrator or supervisor skill with explicit reassignment rules | orchestrator reassignment plus Task per backlog item |
+| Hierarchical Delegation | naturally layered decomposition | shallow hierarchy with a top-level orchestrator and one downstream coordination layer | shallow orchestrator plus one coordination layer |
 
 Short summaries:
 
@@ -220,6 +240,7 @@ Every generated harness should meet these checks:
 - `references/agent-design-patterns.md` for pattern choice and coordination styles
 - `references/autonomous-experimentation.md` for iterative experiment loops on user-controlled compute
 - `references/orchestrator-template.md` for a reusable orchestrator-spec template
+- `references/cursor-orchestration.md` for Cursor Task-tool orchestration and frontmatter defaults
 - `references/team-examples.md` for example artifact trees and handoff patterns
 - `references/skill-writing-guide.md` for authoring specialist skills
 - `references/skill-testing-guide.md` for validation and iteration loops

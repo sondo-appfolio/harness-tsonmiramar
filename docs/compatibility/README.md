@@ -4,6 +4,7 @@ Harness keeps `.agents/skills/harness/` as the shared install path and adds nati
 
 | Agent | Shared skill path | Native path | Native files for agent-specific behavior |
 | --- | --- | --- | --- |
+| Cursor | `.agents/skills/harness/` or `~/.agents/skills/harness/` | `.cursor/skills/harness/` or `~/.cursor/skills/harness/` | `.cursor/rules/` for durable repo-wide constraints |
 | ForgeCode | `.agents/skills/harness/` or `~/.agents/skills/harness/` | `.forge/skills/harness/` or `~/forge/skills/harness/` | `.forge/agents/` or `~/forge/agents/` |
 | Codex | `.agents/skills/harness/` or `~/.agents/skills/harness/` | `.codex/skills/harness/` or `~/.codex/skills/harness/` | none |
 | Droid | `.agents/skills/harness/` or `~/.agents/skills/harness/` | `.factory/skills/harness/` or `~/.factory/skills/harness/` | `.factory/droids/` or `~/.factory/droids/` |
@@ -12,6 +13,7 @@ Harness keeps `.agents/skills/harness/` as the shared install path and adds nati
 
 Use the shared path whenever you want one Harness skill tree that multiple agents can reuse. Add the native mirror only when the client has its own skill discovery path or separate subagent format.
 
+- [Cursor](cursor.md)
 - [ForgeCode](forgecode.md)
 - [Codex](codex.md)
 - [Droid](droid.md)

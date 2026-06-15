@@ -22,11 +22,13 @@ Produce a short cited research brief for one repository-specific question using 
 
 - Gather findings into `_workspace/01_source_findings.md`.
 - Keep each finding tied to one source and one claim.
+- On Cursor, the orchestrator may delegate this phase with a Task spawn using `docs/harness/starter-research/roles/source-research.md`.
 
 ### Phase 3: Synthesis
 
 - Read the request summary and findings artifact.
 - Write `_workspace/final/report.md` with a short answer, supporting evidence, and open questions.
+- On Cursor, the orchestrator may delegate synthesis with a Task spawn using `docs/harness/starter-research/roles/research-lead.md`.
 
 ## Failure Policy
 

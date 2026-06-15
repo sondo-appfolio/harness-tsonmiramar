@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE_SKILL_DIR = ROOT / ".agents" / "skills" / "harness"
-LAYOUTS = ("standard", "forgecode", "droid", "openhands", "aider", "codex")
+LAYOUTS = ("standard", "forgecode", "droid", "openhands", "aider", "codex", "cursor")
 MODES = ("copy", "symlink")
 SCOPES = ("project", "user")
 
@@ -76,6 +76,9 @@ def destination_specs(scope: str, layout: str) -> list[tuple[str, str]]:
   elif layout == "codex":
     native = ".codex/skills/harness" if scope == "project" else ".codex/skills/harness"
     specs.append(("codex", native))
+  elif layout == "cursor":
+    native = ".cursor/skills/harness" if scope == "project" else ".cursor/skills/harness"
+    specs.append(("cursor", native))
 
   return specs
 
@@ -138,6 +141,13 @@ def post_install_notes(scope: str, layout: str, root: Path) -> list[str]:
   if layout == "codex":
     notes.append(
       "Codex can use the shared install and the native .codex/skills mirror. Keep reusable Harness workflow logic in the shared tree and use the Codex mirror for native discovery."
+    )
+  if layout == "cursor":
+    notes.append(
+      "Cursor uses the shared install and the native .cursor/skills mirror. Prefer --mode symlink so the mirror stays linked to .agents/skills/harness/."
+    )
+    notes.append(
+      "After generating domain skills, run: python3 scripts/mirror_skills.py --target <repo-root> --layout cursor"
     )
   if layout == "aider":
     notes.append(aider_followup(root))

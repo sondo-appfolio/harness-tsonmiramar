@@ -221,6 +221,54 @@ def main() -> int:
       "Missing Codex mirror install.",
     )
 
+    project_cursor = tmp_root / "project-cursor"
+    project_cursor.mkdir()
+    cursor_install = run_install(
+      "--scope",
+      "project",
+      "--target",
+      str(project_cursor),
+      "--layout",
+      "cursor",
+      "--mode",
+      "symlink",
+    )
+    assert_shared_install(project_cursor, expect_symlink=True)
+    assert_true(
+      (project_cursor / ".agents" / "skills" / "harness" / "SKILL.md").exists(),
+      "Missing shared Cursor install.",
+    )
+    assert_true(
+      (project_cursor / ".cursor" / "skills" / "harness" / "SKILL.md").exists(),
+      "Missing Cursor mirror install.",
+    )
+    assert_true(
+      (project_cursor / ".cursor" / "skills" / "harness").is_symlink(),
+      "Expected Cursor mirror to be a symlink in symlink mode.",
+    )
+    assert_contains(
+      cursor_install.stdout,
+      "python3 scripts/mirror_skills.py --target",
+      "Expected Cursor post-install guidance to mention mirror_skills.py.",
+    )
+
+    cursor_home_root = tmp_root / "home-cursor"
+    cursor_home_root.mkdir()
+    cursor_env = os.environ.copy()
+    cursor_env["HOME"] = str(cursor_home_root)
+    user_cursor = run_install(
+      "--scope", "user", "--layout", "cursor", "--mode", "symlink", env=cursor_env
+    )
+    assert_true(
+      (cursor_home_root / ".cursor" / "skills" / "harness" / "SKILL.md").exists(),
+      "Missing user-level Cursor mirror install.",
+    )
+    assert_contains(
+      user_cursor.stdout,
+      "native .cursor/skills mirror",
+      "Expected Cursor post-install guidance in output.",
+    )
+
     project_openhands = tmp_root / "project-openhands"
     project_openhands.mkdir()
     openhands = run_install(

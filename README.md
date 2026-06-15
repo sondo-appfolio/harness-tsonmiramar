@@ -11,7 +11,7 @@
 
 Meta Harness is a portable, standards-first meta-skill for designing domain-specific workflows, reusable specialist skills, and deterministic handoff artifacts.
 
-Current project version: `0.3`. See [Changelog](CHANGELOG.md) for checkpoint-based version history.
+Current project version: `0.4`. See [Changelog](CHANGELOG.md) for checkpoint-based version history.
 
 Adapted from [the original Harness project](https://github.com/revfactory/harness) and distributed here under the same [Apache 2.0](LICENSE) license.
 
@@ -58,8 +58,10 @@ meta-harness/
 ├── docs/harness/README.md
 ├── docs/harness/starter-research/
 ├── scripts/install_harness.py
+├── scripts/mirror_skills.py
 ├── scripts/test_install_harness.py
 ├── scripts/validate_codex_port.py
+├── scripts/validate_cursor_port.py
 └── LICENSE
 ```
 
@@ -79,8 +81,17 @@ python3 scripts/install_harness.py --scope user --layout standard
 
 Use `--layout forgecode`, `--layout droid`, `--layout openhands`, or `--layout aider` when you want a client-specific mirror or follow-up guidance.
 Use `--layout codex` when you want Codex to see both the shared Harness tree and the native `.codex/skills/harness/` mirror.
+Use `--layout cursor` when you want Cursor to see both the shared Harness tree and the native `.cursor/skills/harness/` mirror.
 Harness installs the skill tree only; the target repository keeps ownership of its own `AGENTS.md`, `README.md`, and docs.
 See [Compatibility Guides](docs/compatibility/README.md) for path mappings and agent-specific follow-up.
+
+## Runtime Matrix
+
+| Runtime | Repo | Install |
+| --- | --- | --- |
+| Claude Code | [tsonmiramar/harness](https://github.com/tsonmiramar/harness) or [revfactory/harness](https://github.com/revfactory/harness) | Claude marketplace plugin |
+| Cursor | `tsonmiramar/meta-harness` | `python3 scripts/install_harness.py --scope project --target . --layout cursor --mode symlink` |
+| Codex | [SaehwanPark/meta-harness](https://github.com/SaehwanPark/meta-harness) | `--layout codex` |
 
 ## Use
 
@@ -124,6 +135,7 @@ Start from the [orchestrator template](.agents/skills/harness/references/orchest
 ```shell
 python3 scripts/test_install_harness.py
 python3 scripts/validate_codex_port.py
+python3 scripts/validate_cursor_port.py
 ```
 
 The smoke test checks the installer across project and user scopes. The validator checks required files, README links, the short `AGENTS.md` contract, main-skill headings, pattern coverage, and the absence of removed runtime-specific paths in the canonical docs.

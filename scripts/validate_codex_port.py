@@ -76,6 +76,7 @@ DOC_LEGACY_PATTERNS = [
 INSTALL_VALIDATION_COMMANDS = [
   "python3 scripts/test_install_harness.py",
   "python3 scripts/validate_codex_port.py",
+  "python3 scripts/validate_cursor_port.py",
 ]
 
 AGENTS_MAX_LINES = 24

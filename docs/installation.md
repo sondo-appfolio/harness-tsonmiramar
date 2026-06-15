@@ -29,6 +29,7 @@ The installed skill tree includes the AGENTS authoring guide, but repo-level con
 - `droid`: also mirrors Harness into `.factory/skills/harness/`
 - `openhands`: uses the shared `.agents/skills/harness/` tree
 - `codex`: also mirrors Harness into `.codex/skills/harness/`
+- `cursor`: also mirrors Harness into `.cursor/skills/harness/`; prefer `--mode symlink`
 - `aider`: uses the shared tree and prints the `.aider.conf.yml` follow-up snippet for `AGENTS.md`
 
 ## Local Development
@@ -37,6 +38,7 @@ The installed skill tree includes the AGENTS authoring guide, but repo-level con
 2. Read [.agents/skills/harness/SKILL.md](../.agents/skills/harness/SKILL.md) for the main workflow.
 3. Run `python3 scripts/test_install_harness.py` to smoke test the installer.
 4. Run `python3 scripts/validate_codex_port.py` for structural validation.
+5. Run `python3 scripts/validate_cursor_port.py` when working on the Cursor layout.
 
 ## Notes
 

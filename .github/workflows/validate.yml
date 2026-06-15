@@ -23,3 +23,6 @@ jobs:
 
       - name: Run repository validator
         run: python3 scripts/validate_codex_port.py
+
+      - name: Run Cursor layout validator
+        run: python3 scripts/validate_cursor_port.py
