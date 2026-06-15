@@ -88,5 +88,5 @@ Every generated `SKILL.md` must include at least `name` and `description`.
 | Runtime | Repo / install |
 | --- | --- |
 | Claude Code | [tsonmiramar/harness](https://github.com/tsonmiramar/harness) or [revfactory/harness](https://github.com/revfactory/harness) |
-| Cursor | `tsonmiramar/meta-harness` with `--layout cursor` |
+| Cursor | [sondo-appfolio/meta-harness](https://github.com/sondo-appfolio/meta-harness) with `--layout cursor` |
 | Codex | [SaehwanPark/meta-harness](https://github.com/SaehwanPark/meta-harness) with `--layout codex` |

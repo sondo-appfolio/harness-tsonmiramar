@@ -90,7 +90,7 @@ See [Compatibility Guides](docs/compatibility/README.md) for path mappings and a
 | Runtime | Repo | Install |
 | --- | --- | --- |
 | Claude Code | [tsonmiramar/harness](https://github.com/tsonmiramar/harness) or [revfactory/harness](https://github.com/revfactory/harness) | Claude marketplace plugin |
-| Cursor | `tsonmiramar/meta-harness` | `python3 scripts/install_harness.py --scope project --target . --layout cursor --mode symlink` |
+| Cursor | [sondo-appfolio/meta-harness](https://github.com/sondo-appfolio/meta-harness) | `python3 scripts/install_harness.py --scope project --target . --layout cursor --mode symlink` |
 | Codex | [SaehwanPark/meta-harness](https://github.com/SaehwanPark/meta-harness) | `--layout codex` |
 
 ## Use
